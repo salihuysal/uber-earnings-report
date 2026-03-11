@@ -565,6 +565,13 @@ btnOpenDir.addEventListener('click', () => {
 });
 
 // =========================================
+// Display app version
+// =========================================
+window.api.getVersion().then(v => {
+  document.getElementById('version').textContent = `v${v}`;
+});
+
+// =========================================
 // Auto Update
 // =========================================
 window.api.onUpdateAvailable((version) => {

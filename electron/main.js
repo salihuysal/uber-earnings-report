@@ -73,6 +73,11 @@ async function cleanupBrowser() {
 }
 
 // =========================================
+// IPC: App version
+// =========================================
+ipcMain.handle('get-version', () => app.getVersion());
+
+// =========================================
 // IPC: Launch browser for manual login
 // =========================================
 ipcMain.handle('launch-browser', async () => {
