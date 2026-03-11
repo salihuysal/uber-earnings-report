@@ -82,7 +82,7 @@ const REVENUE_FIELDS = [
   { key: 'netEarnings', label: 'Net Earnings' },
 ];
 
-const DEFAULT_FORMULA = { fare: '+', serviceFee: '-', promotions: '+', tip: '+' };
+const DEFAULT_FORMULA = { fare: '+', serviceFee: '+', promotions: '+', tip: '+' };
 
 const ALL_EXPORT_COLUMNS = [
   { key: 'zeitraum', label: 'Zeitraum' },
@@ -648,7 +648,7 @@ function formatDE(v) {
 function calculateUmsatz(row) {
   let result = 0;
   for (const [field, sign] of Object.entries(revenueFormula)) {
-    const val = typeof row[field] === 'number' ? Math.abs(row[field]) : 0;
+    const val = typeof row[field] === 'number' ? row[field] : 0;
     if (sign === '+') result += val;
     else if (sign === '-') result -= val;
   }
