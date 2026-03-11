@@ -594,8 +594,20 @@ window.api.onUpdateDownloaded((version) => {
   btnInstallUpdate.classList.remove('hidden');
 });
 
+window.api.onUpdateError((msg) => {
+  updateBanner.classList.remove('hidden');
+  updateBanner.querySelector('span').textContent = `Update-Fehler: ${msg}`;
+});
+
 btnInstallUpdate.addEventListener('click', () => {
   btnInstallUpdate.disabled = true;
   updateBanner.querySelector('span').textContent = 'Update wird installiert, App startet neu...';
   window.api.installUpdate();
+
+  // Fallback: if the app didn't quit after 8s, show manual restart hint
+  setTimeout(() => {
+    updateBanner.querySelector('span').textContent =
+      'Bitte die App manuell schließen (Cmd+Q / Alt+F4) und neu starten.';
+    btnInstallUpdate.classList.add('hidden');
+  }, 8000);
 });

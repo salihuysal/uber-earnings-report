@@ -10,6 +10,7 @@ let automationBrowser = null;
 let automationPage = null;
 let adapter = null;
 let isExtracting = false;
+let isInstallingUpdate = false;
 
 function getSessionPath() {
   return path.join(app.getPath('userData'), 'session.json');
@@ -53,6 +54,10 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', async () => {
+  if (isInstallingUpdate) {
+    app.quit();
+    return;
+  }
   await cleanupBrowser();
   app.quit();
 });
@@ -597,12 +602,33 @@ autoUpdater.on('update-downloaded', (info) => {
 
 autoUpdater.on('error', (err) => {
   console.log('[Updater] Error:', err.message);
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-error', err.message);
+  }
 });
 
 ipcMain.handle('install-update', () => {
+  isInstallingUpdate = true;
+
+  // Kill browser references immediately to prevent cleanup from hanging
+  automationBrowser = null;
+  automationPage = null;
+  adapter = null;
+
   setTimeout(() => {
-    autoUpdater.quitAndInstall(false, true);
-  }, 500);
+    try {
+      autoUpdater.quitAndInstall(false, true);
+    } catch (e) {
+      console.log('[Updater] quitAndInstall failed:', e.message);
+    }
+  }, 300);
+
+  // Fallback: force exit if quitAndInstall didn't work after 5s
+  setTimeout(() => {
+    console.log('[Updater] Force exit fallback');
+    app.exit(0);
+  }, 5000);
+
   return { installing: true };
 });
 
