@@ -34,17 +34,17 @@ const DEFAULT_COLUMNS = [
 ];
 
 const FIELD_LABELS = {
-  fare: 'Fahrtpreis',
+  fare: 'Fahrpreis',
   serviceFee: 'Servicegebühr',
   tip: 'Trinkgeld',
-  promotions: 'Aktionen',
-  totalEarning: 'Total Earnings',
-  refundsExpenses: 'Refunds & Expenses',
-  yourEarnings: 'Your Earnings',
-  adjustments: 'Adjustments',
-  cashCollected: 'Cash Collected',
-  payout: 'Payout',
-  netEarnings: 'Net Earnings',
+  promotions: 'Aktion',
+  totalEarning: 'Gesamtumsätze',
+  refundsExpenses: 'Rückerstattungen',
+  yourEarnings: 'Deine Einnahmen',
+  adjustments: 'Anpassungen',
+  cashCollected: 'Bareinnahmen',
+  payout: 'Auszahlung',
+  netEarnings: 'Nettoumsätze',
 };
 
 function formatDE(value) {

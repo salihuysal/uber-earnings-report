@@ -69,35 +69,35 @@ let cachedDrivers = [];
 let driversLoaded = false;
 
 const REVENUE_FIELDS = [
-  { key: 'fare', label: 'Fahrtpreis (Fare)' },
-  { key: 'serviceFee', label: 'Servicegebühr (Service Fee)' },
-  { key: 'tip', label: 'Trinkgeld (Tip)' },
-  { key: 'promotions', label: 'Aktionen (Promotions)' },
-  { key: 'totalEarning', label: 'Total Earnings' },
-  { key: 'refundsExpenses', label: 'Refunds & Expenses' },
-  { key: 'yourEarnings', label: 'Your Earnings (Adj.)' },
-  { key: 'adjustments', label: 'Adjustments' },
-  { key: 'cashCollected', label: 'Cash Collected' },
-  { key: 'payout', label: 'Payout' },
-  { key: 'netEarnings', label: 'Net Earnings' },
+  { key: 'fare', label: 'Fahrpreis' },
+  { key: 'serviceFee', label: 'Servicegebühr' },
+  { key: 'tip', label: 'Trinkgeld' },
+  { key: 'promotions', label: 'Aktion' },
+  { key: 'totalEarning', label: 'Gesamtumsätze' },
+  { key: 'refundsExpenses', label: 'Rückerstattungen und Auslagen' },
+  { key: 'yourEarnings', label: 'Deine Einnahmen' },
+  { key: 'adjustments', label: 'Anpassungen aus vorherigen Zeiträumen' },
+  { key: 'cashCollected', label: 'Bareinnahmen' },
+  { key: 'payout', label: 'Auszahlung' },
+  { key: 'netEarnings', label: 'Nettoumsätze' },
 ];
 
 const DEFAULT_FORMULA = { fare: '+', serviceFee: '+', promotions: '+', tip: '+' };
 
 const ALL_EXPORT_COLUMNS = [
   { key: 'zeitraum', label: 'Zeitraum' },
-  { key: 'fare', label: 'Fahrtpreis' },
+  { key: 'fare', label: 'Fahrpreis' },
   { key: 'serviceFee', label: 'Servicegebühr' },
-  { key: 'promotions', label: 'Aktionen' },
+  { key: 'promotions', label: 'Aktion' },
   { key: 'tip', label: 'Trinkgeld' },
-  { key: 'totalEarning', label: 'Total Earnings' },
-  { key: 'refundsExpenses', label: 'Refunds & Expenses' },
-  { key: 'yourEarnings', label: 'Your Earnings' },
-  { key: 'adjustments', label: 'Adjustments' },
-  { key: 'cashCollected', label: 'Cash Collected' },
+  { key: 'totalEarning', label: 'Gesamtumsätze' },
+  { key: 'refundsExpenses', label: 'Rückerstattungen und Auslagen' },
+  { key: 'yourEarnings', label: 'Deine Einnahmen' },
+  { key: 'adjustments', label: 'Anpassungen' },
+  { key: 'cashCollected', label: 'Bareinnahmen' },
   { key: 'umsatz', label: 'Umsatz (berechnet)' },
-  { key: 'payout', label: 'Payout' },
-  { key: 'netEarnings', label: 'Net Earnings' },
+  { key: 'payout', label: 'Auszahlung' },
+  { key: 'netEarnings', label: 'Nettoumsätze' },
 ];
 
 const DEFAULT_EXPORT_COLUMNS = [

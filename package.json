@@ -1,6 +1,6 @@
 {
   "name": "uber-earnings-report",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Uber Earnings Report Generator - Desktop App",
   "author": "Salih Uysal",
   "main": "electron/main.js",
