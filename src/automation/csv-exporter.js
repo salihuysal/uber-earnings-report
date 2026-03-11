@@ -39,7 +39,7 @@ function calculateRevenue(row, formula) {
   if (!formula || Object.keys(formula).length === 0) return null;
   let revenue = 0;
   for (const [field, sign] of Object.entries(formula)) {
-    const val = typeof row[field] === 'number' ? row[field] : 0;
+    const val = typeof row[field] === 'number' ? Math.abs(row[field]) : 0;
     if (sign === '+') revenue += val;
     else if (sign === '-') revenue -= val;
   }

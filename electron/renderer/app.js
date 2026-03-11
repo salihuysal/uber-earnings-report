@@ -510,7 +510,7 @@ function formatDE(v) {
 function calculateUmsatz(row) {
   let result = 0;
   for (const [field, sign] of Object.entries(revenueFormula)) {
-    const val = typeof row[field] === 'number' ? row[field] : 0;
+    const val = typeof row[field] === 'number' ? Math.abs(row[field]) : 0;
     if (sign === '+') result += val;
     else if (sign === '-') result -= val;
   }
