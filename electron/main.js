@@ -329,7 +329,7 @@ ipcMain.handle('get-drivers', async () => {
 // =========================================
 // IPC: Start extraction (via GraphQL API)
 // =========================================
-ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, driverFilter, outputDir, revenueFormula }) => {
+ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, driverFilter, outputDir, revenueFormula, exportColumns }) => {
   if (!automationPage) throw new Error('Browser not ready');
   if (isExtracting) throw new Error('Extraction already in progress');
 
@@ -513,7 +513,7 @@ ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, 
     let pdfFiles = 0;
     let exportDir = defaultDir;
     try {
-      const pdfResult = await exportAllPDF(collectedData, defaultDir, revenueFormula);
+      const pdfResult = await exportAllPDF(collectedData, defaultDir, revenueFormula, exportColumns);
       pdfFiles = pdfResult.filesCreated;
       exportDir = pdfResult.outputDir;
       logToRenderer(`${pdfFiles} PDF-Dateien exportiert`);

@@ -150,6 +150,15 @@
           <div class="revenue-summary" id="revenueSummary">= Umsatz (wird als Spalte exportiert)</div>
         </div>
 
+        <!-- Export Columns -->
+        <div class="export-columns-section">
+          <div class="revenue-header">
+            <label class="section-label">PDF-Spalten (Reihenfolge per Drag)</label>
+            <button class="btn-link" id="btnResetColumns">Zurücksetzen</button>
+          </div>
+          <div class="export-columns-list" id="exportColumnsList"></div>
+        </div>
+
         <!-- Output Directory -->
         <div class="output-section">
           <label>Exportverzeichnis:</label>
@@ -205,7 +214,7 @@
           <div class="result-card success">
             <div class="result-icon">✅</div>
             <div class="result-text">
-              <strong id="resultCount">0</strong> Dateien exportiert (CSV + PDF)
+              <strong id="resultCount">0</strong> PDF-Dateien exportiert
             </div>
           </div>
           <div class="result-card">

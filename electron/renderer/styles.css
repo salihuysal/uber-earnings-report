@@ -734,6 +734,73 @@ body {
   font-weight: 500;
 }
 
+/* Export Columns Config */
+.export-columns-section {
+  margin-bottom: 20px;
+}
+
+.export-columns-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.export-col-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.1s;
+  cursor: grab;
+  user-select: none;
+}
+
+.export-col-row:last-child {
+  border-bottom: none;
+}
+
+.export-col-row:hover {
+  background: var(--bg);
+}
+
+.export-col-row.dragging {
+  opacity: 0.4;
+  background: var(--bg);
+}
+
+.export-col-row.drag-over {
+  border-top: 2px solid var(--accent);
+}
+
+.export-col-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.export-col-row .col-label {
+  flex: 1;
+}
+
+.export-col-row .drag-handle {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 0 4px;
+  cursor: grab;
+}
+
+.export-col-row .col-order {
+  color: var(--text-muted);
+  font-size: 11px;
+  min-width: 20px;
+  text-align: center;
+  margin-right: 8px;
+}
+
 /* Live Data Table */
 .data-table-container {
   background: var(--surface);

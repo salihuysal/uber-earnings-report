@@ -37,6 +37,9 @@ const revenueFields = document.getElementById('revenueFields');
 const revenueSummary = document.getElementById('revenueSummary');
 const btnResetFormula = document.getElementById('btnResetFormula');
 
+const exportColumnsList = document.getElementById('exportColumnsList');
+const btnResetColumns = document.getElementById('btnResetColumns');
+
 const step3Title = document.getElementById('step3Title');
 const progressSection = document.getElementById('progressSection');
 const progressFill = document.getElementById('progressFill');
@@ -79,9 +82,42 @@ const REVENUE_FIELDS = [
   { key: 'netEarnings', label: 'Net Earnings' },
 ];
 
-const DEFAULT_FORMULA = { fare: '+', serviceFee: '-' };
+const DEFAULT_FORMULA = { fare: '+', serviceFee: '-', promotions: '+', tip: '+' };
+
+const ALL_EXPORT_COLUMNS = [
+  { key: 'zeitraum', label: 'Zeitraum' },
+  { key: 'fare', label: 'Fahrtpreis' },
+  { key: 'serviceFee', label: 'Servicegebühr' },
+  { key: 'promotions', label: 'Aktionen' },
+  { key: 'tip', label: 'Trinkgeld' },
+  { key: 'totalEarning', label: 'Total Earnings' },
+  { key: 'refundsExpenses', label: 'Refunds & Expenses' },
+  { key: 'yourEarnings', label: 'Your Earnings' },
+  { key: 'adjustments', label: 'Adjustments' },
+  { key: 'cashCollected', label: 'Cash Collected' },
+  { key: 'umsatz', label: 'Umsatz (berechnet)' },
+  { key: 'payout', label: 'Payout' },
+  { key: 'netEarnings', label: 'Net Earnings' },
+];
+
+const DEFAULT_EXPORT_COLUMNS = [
+  { key: 'zeitraum', enabled: true },
+  { key: 'fare', enabled: true },
+  { key: 'serviceFee', enabled: true },
+  { key: 'promotions', enabled: true },
+  { key: 'tip', enabled: true },
+  { key: 'umsatz', enabled: true },
+  { key: 'payout', enabled: true },
+  { key: 'totalEarning', enabled: false },
+  { key: 'refundsExpenses', enabled: false },
+  { key: 'yourEarnings', enabled: false },
+  { key: 'adjustments', enabled: false },
+  { key: 'cashCollected', enabled: false },
+  { key: 'netEarnings', enabled: false },
+];
 
 let revenueFormula = loadFormula();
+let exportColumns = loadExportColumns();
 
 // =========================================
 // Step Navigation
@@ -420,6 +456,106 @@ btnResetFormula.addEventListener('click', () => {
 renderRevenueFields();
 
 // =========================================
+// Export Columns Configuration
+// =========================================
+function loadExportColumns() {
+  try {
+    const saved = localStorage.getItem('exportColumns');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const knownKeys = new Set(ALL_EXPORT_COLUMNS.map(c => c.key));
+      const savedKeys = new Set(parsed.map(c => c.key));
+      const result = parsed.filter(c => knownKeys.has(c.key));
+      for (const col of ALL_EXPORT_COLUMNS) {
+        if (!savedKeys.has(col.key)) {
+          result.push({ key: col.key, enabled: false });
+        }
+      }
+      return result;
+    }
+  } catch (e) { /* use default */ }
+  return DEFAULT_EXPORT_COLUMNS.map(c => ({ ...c }));
+}
+
+function saveExportColumns() {
+  localStorage.setItem('exportColumns', JSON.stringify(exportColumns));
+}
+
+function getEnabledExportColumns() {
+  return exportColumns
+    .filter(c => c.enabled)
+    .map(c => {
+      const meta = ALL_EXPORT_COLUMNS.find(a => a.key === c.key);
+      return { key: c.key, label: meta ? meta.label : c.key };
+    });
+}
+
+let dragSrcIdx = null;
+
+function renderExportColumns() {
+  exportColumnsList.innerHTML = exportColumns.map((col, idx) => {
+    const meta = ALL_EXPORT_COLUMNS.find(a => a.key === col.key);
+    const label = meta ? meta.label : col.key;
+    return `
+      <div class="export-col-row" draggable="true" data-idx="${idx}">
+        <span class="col-order">${idx + 1}</span>
+        <input type="checkbox" ${col.enabled ? 'checked' : ''} data-key="${col.key}">
+        <span class="col-label">${label}</span>
+        <span class="drag-handle">⠿</span>
+      </div>
+    `;
+  }).join('');
+
+  exportColumnsList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const key = cb.dataset.key;
+      const col = exportColumns.find(c => c.key === key);
+      if (col) col.enabled = cb.checked;
+      saveExportColumns();
+    });
+  });
+
+  exportColumnsList.querySelectorAll('.export-col-row').forEach(row => {
+    row.addEventListener('dragstart', (e) => {
+      dragSrcIdx = parseInt(row.dataset.idx);
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      exportColumnsList.querySelectorAll('.export-col-row').forEach(r => r.classList.remove('drag-over'));
+    });
+
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      exportColumnsList.querySelectorAll('.export-col-row').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const targetIdx = parseInt(row.dataset.idx);
+      if (dragSrcIdx !== null && dragSrcIdx !== targetIdx) {
+        const [moved] = exportColumns.splice(dragSrcIdx, 1);
+        exportColumns.splice(targetIdx, 0, moved);
+        saveExportColumns();
+        renderExportColumns();
+      }
+    });
+  });
+}
+
+btnResetColumns.addEventListener('click', () => {
+  exportColumns = DEFAULT_EXPORT_COLUMNS.map(c => ({ ...c }));
+  saveExportColumns();
+  renderExportColumns();
+});
+
+renderExportColumns();
+
+// =========================================
 // Start Extraction
 // =========================================
 btnStartExtraction.addEventListener('click', async () => {
@@ -436,6 +572,7 @@ btnStartExtraction.addEventListener('click', async () => {
       driverFilter,
       outputDir: outputDir || undefined,
       revenueFormula: { ...revenueFormula },
+      exportColumns: getEnabledExportColumns(),
     };
     const monthNames = ['', 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
@@ -456,6 +593,7 @@ btnStartExtraction.addEventListener('click', async () => {
       driverFilter,
       outputDir: outputDir || undefined,
       revenueFormula: { ...revenueFormula },
+      exportColumns: getEnabledExportColumns(),
     };
     progressLabel = `${selectedIndices.length} Zeiträume`;
   }
