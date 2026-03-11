@@ -600,7 +600,10 @@ autoUpdater.on('error', (err) => {
 });
 
 ipcMain.handle('install-update', () => {
-  autoUpdater.quitAndInstall(false, true);
+  setTimeout(() => {
+    autoUpdater.quitAndInstall(false, true);
+  }, 500);
+  return { installing: true };
 });
 
 ipcMain.handle('check-for-updates', async () => {

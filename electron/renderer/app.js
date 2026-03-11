@@ -595,5 +595,7 @@ window.api.onUpdateDownloaded((version) => {
 });
 
 btnInstallUpdate.addEventListener('click', () => {
+  btnInstallUpdate.disabled = true;
+  updateBanner.querySelector('span').textContent = 'Update wird installiert, App startet neu...';
   window.api.installUpdate();
 });
