@@ -560,15 +560,21 @@ window.api.onLog((msg) => {
 // Open Directory
 // =========================================
 btnOpenDir.addEventListener('click', () => {
-  const dir = outputDir || 'Uber_Reports';
-  window.api.openDirectory(dir);
+  window.api.openDirectory(outputDir);
 });
 
 // =========================================
-// Display app version
+// Display app version & set default directory
 // =========================================
 window.api.getVersion().then(v => {
   document.getElementById('version').textContent = `v${v}`;
+});
+
+window.api.getDefaultDir().then(dir => {
+  if (!outputDir) {
+    outputDir = dir;
+    txtOutputDir.value = dir;
+  }
 });
 
 // =========================================

@@ -3,7 +3,6 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const { createPlaywrightAdapter } = require('./playwright-adapter');
-const { exportAllCSV } = require('../src/automation/csv-exporter');
 const { exportAllPDF } = require('../src/automation/pdf-exporter');
 
 let mainWindow;
@@ -73,9 +72,13 @@ async function cleanupBrowser() {
 }
 
 // =========================================
-// IPC: App version
+// IPC: App version & default directory
 // =========================================
 ipcMain.handle('get-version', () => app.getVersion());
+
+ipcMain.handle('get-default-dir', () => {
+  return path.join(app.getPath('documents'), 'Ubergo');
+});
 
 // =========================================
 // IPC: Launch browser for manual login
@@ -497,28 +500,28 @@ ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, 
       }
     }
 
-    // Step 4: Export CSV + PDF files
-    logToRenderer('\n=== Dateien exportieren (CSV + PDF) ===');
+    // Step 4: Export PDF files
+    logToRenderer('\n=== PDF-Dateien exportieren ===');
     const driversProcessed = Object.keys(collectedData).length;
-    const csvResult = exportAllCSV(collectedData, outputDir, revenueFormula);
-    logToRenderer(`${csvResult.filesCreated} CSV-Dateien exportiert`);
+    const defaultDir = outputDir || path.join(app.getPath('documents'), 'Ubergo');
 
     let pdfFiles = 0;
+    let exportDir = defaultDir;
     try {
-      const pdfResult = await exportAllPDF(collectedData, outputDir, revenueFormula);
+      const pdfResult = await exportAllPDF(collectedData, defaultDir, revenueFormula);
       pdfFiles = pdfResult.filesCreated;
+      exportDir = pdfResult.outputDir;
       logToRenderer(`${pdfFiles} PDF-Dateien exportiert`);
     } catch (e) {
-      logToRenderer(`PDF-Export übersprungen: ${e.message}`);
+      logToRenderer(`PDF-Export Fehler: ${e.message}`);
     }
 
-    const totalFiles = csvResult.filesCreated + pdfFiles;
-    logToRenderer(`\nDone! ${totalFiles} Dateien nach ${csvResult.outputDir}`);
+    logToRenderer(`\nFertig! ${pdfFiles} Dateien nach ${exportDir}`);
     logToRenderer(`${driversProcessed} Fahrer, ${totalFetched} Datensätze verarbeitet`);
 
     return {
       success: true,
-      filesCreated: totalFiles,
+      filesCreated: pdfFiles,
       driversProcessed,
       collectedData,
     };
