@@ -335,6 +335,11 @@ ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, 
     logToRenderer('=== API-basierte Extraktion ===');
     logToRenderer(`Supplier: ${uuid}`);
 
+    const formulaDesc = revenueFormula && Object.keys(revenueFormula).length > 0
+      ? Object.entries(revenueFormula).map(([k, s]) => `${s}${k}`).join(' ')
+      : '(keine Formel)';
+    logToRenderer(`Umsatzformel: ${formulaDesc}`);
+
     // Step 1: Get time windows
     const timeWindows = await automationPage.evaluate(async (orgId) => {
       const resp = await fetch('/graphql', {

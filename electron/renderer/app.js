@@ -510,7 +510,7 @@ function formatDE(v) {
 function calculateUmsatz(row) {
   let result = 0;
   for (const [field, sign] of Object.entries(revenueFormula)) {
-    const val = row[field] || 0;
+    const val = typeof row[field] === 'number' ? row[field] : 0;
     if (sign === '+') result += val;
     else if (sign === '-') result -= val;
   }
@@ -525,6 +525,8 @@ window.api.onExtractionRow((data) => {
     <td>${data.driverName || ''}</td>
     <td>${data.period || ''}</td>
     <td>${formatDE(data.fare)}</td>
+    <td>${formatDE(data.serviceFee)}</td>
+    <td>${formatDE(data.promotions)}</td>
     <td>${formatDE(data.tip)}</td>
     <td>${formatDE(umsatz)}</td>
     <td>${formatDE(data.payout)}</td>
