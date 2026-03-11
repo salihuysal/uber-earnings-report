@@ -1,0 +1,84 @@
+/**
+ * Content CSS für Uber Earnings Report Generator
+ * Zeigt einen Overlay während der Extraktion
+ */
+
+.uber-report-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.uber-report-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.uber-report-modal h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #000;
+}
+
+.uber-report-modal p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.uber-report-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #eee;
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: uber-spin 1s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes uber-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.uber-report-progress {
+  background: #eee;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.uber-report-progress-bar {
+  height: 100%;
+  background: #00b37a;
+  transition: width 0.3s ease;
+}
+
+.uber-report-status {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Highlight für aktuell verarbeitete Zeile */
+.uber-report-processing {
+  background: rgba(0, 179, 122, 0.1) !important;
+  outline: 2px solid #00b37a;
+  outline-offset: -2px;
+}

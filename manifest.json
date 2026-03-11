@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Uber Earnings Report Generator",
+  "version": "1.0.0",
+  "description": "Automatische Generierung von Excel-Reports aus dem Uber Supplier Portal",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://supplier.uber.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://supplier.uber.com/*/earnings*"],
+      "js": ["lib/xlsx.full.min.js", "config.js", "content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["config.js"],
+      "matches": ["https://supplier.uber.com/*"]
+    }
+  ]
+}

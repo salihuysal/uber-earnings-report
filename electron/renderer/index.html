@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'">
+  <title>Uber Earnings Report</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Title Bar (macOS drag region) -->
+    <div class="titlebar">
+      <span class="titlebar-text">Uber Earnings Report</span>
+      <span class="version" id="version">v1.0.0</span>
+    </div>
+
+    <!-- Update Banner -->
+    <div class="update-banner hidden" id="updateBanner">
+      <span>Ein Update ist verfügbar!</span>
+      <button id="btnInstallUpdate" class="btn-link">Jetzt installieren</button>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="steps">
+      <div class="step active" data-step="1">
+        <div class="step-number">1</div>
+        <span>Anmelden</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <div class="step-number">2</div>
+        <span>Zeiträume</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <div class="step-number">3</div>
+        <span>Export</span>
+      </div>
+    </div>
+
+    <!-- ======== Step 1: Login ======== -->
+    <div class="panel" id="step1">
+      <div class="panel-content center">
+        <div class="icon-large">🚗</div>
+        <h2>Uber Supplier Portal</h2>
+        <p class="subtitle">Klicke auf "Browser öffnen", melde dich im Uber Portal an, und klicke dann auf "Weiter".</p>
+
+        <button class="btn btn-primary btn-large" id="btnLaunch">
+          <span class="btn-icon">🌐</span>
+          Browser öffnen
+        </button>
+
+        <div class="login-status hidden" id="loginStatus">
+          <div class="spinner"></div>
+          <span>Browser wird gestartet...</span>
+        </div>
+
+        <button class="btn btn-secondary btn-large hidden" id="btnCheckLogin">
+          Weiter →
+        </button>
+
+        <button class="btn-link session-reset hidden" id="btnClearSession">
+          Session zurücksetzen
+        </button>
+      </div>
+    </div>
+
+    <!-- ======== Step 2: Period Selection ======== -->
+    <div class="panel hidden" id="step2">
+      <div class="panel-content">
+        <h2>Abrechnungszeiträume</h2>
+        <p class="subtitle">Wähle die Zeiträume aus, die exportiert werden sollen.</p>
+
+        <!-- Period Mode Toggle -->
+        <div class="mode-toggle">
+          <button class="btn btn-mode active" id="btnModeSettlement" data-mode="settlement">Abrechnungsfenster</button>
+          <button class="btn btn-mode" id="btnModeMonth" data-mode="month">Ganzer Monat</button>
+        </div>
+
+        <!-- Settlement Window Mode -->
+        <div id="settlementMode">
+          <div class="period-controls">
+            <button class="btn btn-small btn-accent" id="btnLoadPeriods">Zeiträume laden</button>
+            <button class="btn btn-small" id="btnSelectAll">Alle</button>
+            <button class="btn btn-small" id="btnSelectNone">Keine</button>
+          </div>
+
+          <div class="period-list" id="periodList">
+            <div class="loading"><span>Klicke "Zeiträume laden" um die verfügbaren Abrechnungsfenster abzurufen.</span></div>
+          </div>
+        </div>
+
+        <!-- Month Selection Mode -->
+        <div id="monthMode" class="hidden">
+          <div class="month-selector">
+            <div class="month-field">
+              <label>Monat</label>
+              <select class="input" id="selMonth">
+                <option value="1">Januar</option>
+                <option value="2">Februar</option>
+                <option value="3">März</option>
+                <option value="4">April</option>
+                <option value="5">Mai</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Dezember</option>
+              </select>
+            </div>
+            <div class="month-field">
+              <label>Jahr</label>
+              <select class="input" id="selYear"></select>
+            </div>
+          </div>
+          <p class="month-hint" id="monthHint"></p>
+        </div>
+
+        <!-- Driver Filter -->
+        <div class="filter-section">
+          <div class="filter-header">
+            <label class="toggle-label">
+              <input type="checkbox" id="chkDriverFilter">
+              <span>Fahrerfilter aktivieren</span>
+            </label>
+            <button class="btn btn-small" id="btnReloadDrivers" title="Fahrer neu laden">Fahrer laden</button>
+          </div>
+          <div class="driver-list hidden" id="driverList">
+            <div class="driver-list-controls">
+              <button class="btn btn-small" id="btnSelectAllDrivers">Alle</button>
+              <button class="btn btn-small" id="btnSelectNoDrivers">Keine</button>
+              <span class="driver-count" id="driverCount"></span>
+            </div>
+            <div class="driver-checkboxes" id="driverCheckboxes">
+              <div class="loading"><span>Keine Fahrer geladen</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue Formula -->
+        <div class="revenue-section">
+          <div class="revenue-header">
+            <label class="section-label">Umsatzberechnung</label>
+            <button class="btn-link" id="btnResetFormula">Zurücksetzen</button>
+          </div>
+          <div class="revenue-fields" id="revenueFields"></div>
+          <div class="revenue-summary" id="revenueSummary">= Umsatz (wird als Spalte exportiert)</div>
+        </div>
+
+        <!-- Output Directory -->
+        <div class="output-section">
+          <label>Exportverzeichnis:</label>
+          <div class="dir-picker">
+            <input type="text" class="input" id="txtOutputDir" value="Uber_Reports" readonly>
+            <button class="btn btn-small" id="btnChooseDir">Ändern</button>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-secondary" id="btnBackToLogin">← Zurück</button>
+          <button class="btn btn-primary" id="btnStartExtraction">
+            <span class="btn-icon">📊</span>
+            Extraktion starten
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== Step 3: Progress / Results ======== -->
+    <div class="panel hidden" id="step3">
+      <div class="panel-content">
+        <h2 id="step3Title">Extraktion läuft...</h2>
+
+        <div class="progress-section" id="progressSection">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">Starte...</div>
+        </div>
+
+        <div class="data-table-container hidden" id="dataTableContainer">
+          <table class="data-table" id="dataTable">
+            <thead>
+              <tr>
+                <th>Fahrer</th>
+                <th>Zeitraum</th>
+                <th>F (Fahrtpreis)</th>
+                <th>T (Trinkgeld)</th>
+                <th>U (Umsatz)</th>
+                <th>C (Cashout)</th>
+              </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="log-area" id="logArea"></div>
+
+        <div class="results hidden" id="resultsSection">
+          <div class="result-card success">
+            <div class="result-icon">✅</div>
+            <div class="result-text">
+              <strong id="resultCount">0</strong> Dateien exportiert (CSV + PDF)
+            </div>
+          </div>
+          <div class="result-card">
+            <div class="result-icon">📁</div>
+            <div class="result-text">
+              <span id="resultDir"></span>
+              <button class="btn-link" id="btnOpenDir">Ordner öffnen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-secondary hidden" id="btnBackToPeriods">← Neue Extraktion</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

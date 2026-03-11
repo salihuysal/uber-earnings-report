@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uber Report Generator - Installation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #8892b0;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .card h2 .number {
+      background: #00b37a;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    .bookmarklet-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #000 0%, #333 100%);
+      color: #fff;
+      padding: 16px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border: 2px solid #00b37a;
+      cursor: grab;
+      transition: all 0.3s ease;
+      margin: 20px 0;
+    }
+    
+    .bookmarklet-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 179, 122, 0.3);
+    }
+    
+    .bookmarklet-button:active {
+      cursor: grabbing;
+    }
+    
+    .instructions {
+      list-style: none;
+      counter-reset: step;
+    }
+    
+    .instructions li {
+      position: relative;
+      padding-left: 40px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+      color: #ccd6f6;
+    }
+    
+    .instructions li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: rgba(0, 179, 122, 0.2);
+      color: #00b37a;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .highlight {
+      background: rgba(0, 179, 122, 0.2);
+      color: #00b37a;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    .warning {
+      background: rgba(255, 193, 7, 0.15);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+      color: #ffc107;
+      font-size: 14px;
+    }
+    
+    .warning strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    
+    .feature {
+      background: rgba(0, 179, 122, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .feature-text {
+      font-size: 13px;
+      color: #8892b0;
+    }
+    
+    .demo-gif {
+      background: #0d1117;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .demo-gif p {
+      color: #8892b0;
+      font-size: 13px;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #5c6370;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Uber Earnings Report Generator</h1>
+    <p class="subtitle">Automatischer CSV/Excel-Export für das Uber Supplier Portal</p>
+    
+    <div class="card">
+      <h2><span class="number">1</span> Bookmarklet installieren</h2>
+      <p style="color: #8892b0; margin-bottom: 20px;">
+        Ziehe den folgenden Button in deine Lesezeichen-Leiste:
+      </p>
+      
+      <center>
+        <a class="bookmarklet-button" href="javascript:(function(){'use strict';const CONFIG={labels:{fare:{en:'Fare',de:'Fahrtpreis'},serviceFee:{en:'Service fee',de:'Servicegebühr'},tip:{en:'Tip',de:'Trinkgeld'},promotions:{en:'Promotions',de:'Aktionen'},totalEarning:{en:'Total earning',de:'Gesamtumsatz'},refundsExpenses:{en:'Refunds & expenses',de:'Erstattungen'},adjustments:{en:'Adjustments',de:'Anpassungen'},payout:{en:'Payout',de:'Auszahlung'}},timing:{afterClick:500,betweenDrivers:300,afterPeriodChange:1500},export:{filePrefix:'Uber_Earnings_',columns:['zeitraum','fare','serviceFee','tip','promotions','totalEarning','refundsExpenses','adjustments','payout','netEarnings'],columnHeaders:{zeitraum:'Zeitraum',fare:'Fahrtpreis',serviceFee:'Servicegebühr',tip:'Trinkgeld',promotions:'Promotions',totalEarning:'Gesamtumsatz',refundsExpenses:'Erstattungen',adjustments:'Anpassungen',payout:'Auszahlung',netEarnings:'Nettoeinnahmen'}}};function createOverlay(){const o=document.createElement('div');o.id='uber-report-overlay';o.innerHTML=`<style>#uber-report-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:999999;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}#uber-report-modal{background:#fff;border-radius:16px;padding:32px;max-width:450px;width:90%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.4)}#uber-report-modal h2{font-size:22px;font-weight:700;margin:0 0 8px 0;color:#000}#uber-report-modal .subtitle{font-size:14px;color:#666;margin-bottom:24px}#uber-report-spinner{width:48px;height:48px;border:4px solid #eee;border-top-color:#000;border-radius:50%;animation:uber-spin 1s linear infinite;margin:0 auto 24px}@keyframes uber-spin{to{transform:rotate(360deg)}}#uber-report-progress{background:#eee;height:8px;border-radius:4px;overflow:hidden;margin-bottom:16px}#uber-report-progress-bar{height:100%;background:linear-gradient(90deg,#00b37a,#00d68f);width:0%;transition:width 0.3s ease}#uber-report-status{font-size:13px;color:#666;margin-bottom:8px}#uber-report-log{background:#f5f5f5;border-radius:8px;padding:12px;max-height:150px;overflow-y:auto;text-align:left;font-family:'Monaco','Menlo',monospace;font-size:11px;color:#333;margin-top:16px}#uber-report-log .success{color:#00875a}#uber-report-log .error{color:#de350b}#uber-report-buttons{margin-top:20px;display:flex;gap:10px;justify-content:center}#uber-report-buttons button{padding:12px 24px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}#uber-report-start{background:#000;color:#fff}#uber-report-start:hover{background:#333}#uber-report-cancel{background:#eee;color:#333}#uber-report-cancel:hover{background:#ddd}#uber-report-close{background:#00b37a;color:#fff;display:none}#uber-report-close:hover{background:#009966}</style><div id='uber-report-modal'><h2>📊 Uber Earnings Report</h2><p class='subtitle'>Automatischer CSV-Export</p><div id='uber-report-spinner' style='display:none;'></div><div id='uber-report-progress' style='display:none;'><div id='uber-report-progress-bar'></div></div><div id='uber-report-status'>Bereit zum Starten</div><div id='uber-report-log'></div><div id='uber-report-buttons'><button id='uber-report-start'>▶ Report generieren</button><button id='uber-report-cancel'>✕ Schließen</button><button id='uber-report-close'>✓ Fertig</button></div></div>`;document.body.appendChild(o);document.getElementById('uber-report-cancel').onclick=()=>{shouldStop=true;o.remove()};document.getElementById('uber-report-close').onclick=()=>o.remove();document.getElementById('uber-report-start').onclick=startExtraction;return o}function updateProgress(p,s){const b=document.getElementById('uber-report-progress-bar');const st=document.getElementById('uber-report-status');if(b)b.style.width=p+'%';if(st)st.textContent=s}function addLog(m,t=''){const l=document.getElementById('uber-report-log');if(l){const e=document.createElement('div');e.className=t;e.textContent=new Date().toLocaleTimeString()+' - '+m;l.appendChild(e);l.scrollTop=l.scrollHeight}}function showSpinner(s){const sp=document.getElementById('uber-report-spinner');const pr=document.getElementById('uber-report-progress');if(sp)sp.style.display=s?'block':'none';if(pr)pr.style.display=s?'block':'none'}let shouldStop=false;let collectedData={};function sleep(ms){return new Promise(r=>setTimeout(r,ms))}function parseAmount(t){if(!t)return 0;const c=t.replace(/[€\\s]/g,'').replace(',','.');const v=parseFloat(c);return isNaN(v)?0:v}function getAvailablePeriods(){const p=[];const l=document.querySelector('[role=\"listbox\"][aria-label=\"Menu\"]');if(l){const o=l.querySelectorAll('[role=\"option\"]');o.forEach(opt=>{const t=opt.textContent.trim();if(t)p.push({text:t,element:opt})})}return p}function getDriversFromTable(){const d=[];const g=document.querySelector('[role=\"grid\"]');if(!g)return d;const rg=g.querySelector('[role=\"rowgroup\"]');if(!rg)return d;const rows=rg.querySelectorAll('[role=\"row\"]');rows.forEach((row,i)=>{const cells=row.querySelectorAll('[role=\"gridcell\"]');if(cells.length>=6){d.push({index:i,name:cells[0]?.textContent?.trim()||'Fahrer_'+(i+1),totalEarning:parseAmount(cells[1]?.textContent),refundsExpenses:parseAmount(cells[2]?.textContent),adjustments:parseAmount(cells[3]?.textContent),payout:parseAmount(cells[4]?.textContent),netEarnings:parseAmount(cells[5]?.textContent),rowElement:row,expandButton:cells[6]?.querySelector('button')})}});return d}async function expandDriverDetails(d){if(d.expandButton){d.expandButton.click();await sleep(CONFIG.timing.afterClick)}}async function extractDetailData(){const det={fare:0,serviceFee:0,tip:0,promotions:0};const items=document.querySelectorAll('[role=\"listitem\"]');for(const item of items){const t=item.textContent;const btn=item.querySelector('button');if(t.includes('Total earning')||t.includes('Gesamtumsatz')){if(btn){btn.click();await sleep(CONFIG.timing.afterClick);const all=document.querySelectorAll('[role=\"listitem\"],li');for(const di of all){const dt=di.textContent;const am=dt.match(/[€]?\\s*([-]?\\d+[.,]?\\d*)/);const amt=am?parseAmount(am[0]):0;const lb=CONFIG.labels;if(dt.includes(lb.fare.en)||dt.includes(lb.fare.de))det.fare=amt;else if(dt.includes(lb.serviceFee.en)||dt.includes(lb.serviceFee.de))det.serviceFee=amt;else if(dt.includes(lb.tip.en)||dt.includes(lb.tip.de))det.tip=amt;else if(dt.includes(lb.promotions.en)||dt.includes(lb.promotions.de))det.promotions=amt}btn.click();await sleep(200);break}}}return det}function hasNextPage(){const n=document.querySelector('[data-testid=\"next-button\"]');return n&&!n.disabled}async function clickNextPage(){const n=document.querySelector('[data-testid=\"next-button\"]');if(n&&!n.disabled){n.click();await sleep(CONFIG.timing.afterClick);return true}return false}async function selectPeriod(po){const db=document.querySelector('[role=\"tabpanel\"] button');if(db){db.click();await sleep(300)}if(po.element){po.element.click()}else{const opts=document.querySelectorAll('[role=\"option\"]');for(const o of opts){if(o.textContent.includes(po.text)){o.click();break}}}await sleep(CONFIG.timing.afterPeriodChange)}function escapeCSV(v){if(v===null||v===undefined)return'';const s=String(v);if(s.includes(',')||s.includes('\"')||s.includes('\\n'))return'\"'+s.replace(/\"/g,'\"\"')+'\"';return s}function createCSVForDriver(dn,data){const h=CONFIG.export.columnHeaders;const c=CONFIG.export.columns;let csv=c.map(col=>escapeCSV(h[col]||col)).join(';')+'\\n';for(const r of data){csv+=c.map(col=>{if(col==='zeitraum')return escapeCSV(r.period);const v=r[col];if(typeof v==='number')return String(v).replace('.',',');return escapeCSV(v!==undefined?v:'')}).join(';')+'\\n'}return csv}function downloadCSV(dn,csv){const sn=dn.replace(/[^a-zA-Z0-9äöüÄÖÜß\\s]/g,'').replace(/\\s+/g,'_');const dt=new Date().toISOString().split('T')[0];const fn=CONFIG.export.filePrefix+sn+'_'+dt+'.csv';const BOM='\\uFEFF';const blob=new Blob([BOM+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=fn;link.style.display='none';document.body.appendChild(link);link.click();document.body.removeChild(link);setTimeout(()=>URL.revokeObjectURL(url),1000)}async function startExtraction(){shouldStop=false;collectedData={};const stBtn=document.getElementById('uber-report-start');const cnBtn=document.getElementById('uber-report-cancel');const clBtn=document.getElementById('uber-report-close');stBtn.style.display='none';cnBtn.textContent='⏹ Abbrechen';showSpinner(true);try{const periods=getAvailablePeriods();if(periods.length===0)throw new Error('Keine Zeiträume gefunden! Bitte öffne das Zeitraum-Dropdown.');addLog(periods.length+' Zeiträume gefunden');for(let pi=0;pi<periods.length&&!shouldStop;pi++){const p=periods[pi];const pp=((pi+1)/periods.length)*100;updateProgress(pp,'Zeitraum '+(pi+1)+'/'+periods.length+': '+p.text);addLog('Wähle: '+p.text);await selectPeriod(p);let pn=1;let hm=true;while(hm&&!shouldStop){const drivers=getDriversFromTable();addLog('Seite '+pn+': '+drivers.length+' Fahrer');for(const d of drivers){if(shouldStop)break;updateProgress(pp,d.name+' ('+p.text+')');await expandDriverDetails(d);const det=await extractDetailData();if(!collectedData[d.name])collectedData[d.name]=[];collectedData[d.name].push({period:p.text,fare:det.fare,serviceFee:det.serviceFee,tip:det.tip,promotions:det.promotions,totalEarning:d.totalEarning,refundsExpenses:d.refundsExpenses,adjustments:d.adjustments,payout:d.payout,netEarnings:d.netEarnings});await sleep(CONFIG.timing.betweenDrivers)}if(hasNextPage()){await clickNextPage();pn++}else{hm=false}}}const dns=Object.keys(collectedData);addLog('Erstelle '+dns.length+' CSV-Dateien...','success');for(const dn of dns){const csv=createCSVForDriver(dn,collectedData[dn]);downloadCSV(dn,csv);addLog('✓ '+dn,'success');await sleep(200)}updateProgress(100,'Fertig!');addLog('✅ '+dns.length+' Dateien erfolgreich erstellt!','success');cnBtn.style.display='none';clBtn.style.display='inline-block'}catch(e){addLog('❌ Fehler: '+e.message,'error');updateProgress(0,'Fehler aufgetreten');stBtn.style.display='inline-block';stBtn.textContent='🔄 Erneut versuchen'}finally{showSpinner(false)}}if(!window.location.href.includes('supplier.uber.com')){alert('⚠️ Bitte öffne zuerst das Uber Supplier Portal!\\n\\nhttps://supplier.uber.com');return}if(!window.location.href.includes('/earnings')){alert('⚠️ Bitte navigiere zur Earnings / Umsätze Seite!');return}const ex=document.getElementById('uber-report-overlay');if(ex)ex.remove();createOverlay();console.log('🚀 Uber Earnings Report Generator geladen')})();">
+          📊 Uber Report
+        </a>
+      </center>
+      
+      <div class="warning">
+        <strong>💡 Tipp:</strong>
+        Falls die Lesezeichen-Leiste nicht sichtbar ist, drücke <span class="highlight">Strg+Shift+B</span> (Windows) oder <span class="highlight">Cmd+Shift+B</span> (Mac).
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2><span class="number">2</span> So benutzt du es</h2>
+      <ol class="instructions">
+        <li>Melde dich im <span class="highlight">Uber Supplier Portal</span> an</li>
+        <li>Navigiere zur <span class="highlight">Earnings</span> / <span class="highlight">Umsätze</span> Seite</li>
+        <li><strong>Wichtig:</strong> Klicke auf das Zeitraum-Dropdown, damit alle Perioden sichtbar sind</li>
+        <li>Klicke auf das <span class="highlight">📊 Uber Report</span> Lesezeichen</li>
+        <li>Klicke auf <span class="highlight">▶ Report generieren</span></li>
+        <li>Warte, bis alle CSV-Dateien heruntergeladen wurden</li>
+      </ol>
+    </div>
+    
+    <div class="card">
+      <h2><span class="number">3</span> Das bekommst du</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">📁</div>
+          <div class="feature-text">Eine CSV-Datei pro Mitarbeiter</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📅</div>
+          <div class="feature-text">Alle Zeiträume automatisch</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <div class="feature-text">Fare, Tips, Promotions, etc.</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-text">Keine Daten werden gesendet</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>📋 CSV in Excel öffnen</h2>
+      <ol class="instructions">
+        <li>Öffne Excel</li>
+        <li>Klicke auf <span class="highlight">Datei → Öffnen</span></li>
+        <li>Wähle die heruntergeladene CSV-Datei</li>
+        <li>Die Daten werden automatisch als Tabelle angezeigt</li>
+      </ol>
+      <div class="warning">
+        <strong>💡 Hinweis:</strong>
+        Die CSV-Dateien sind für deutsches Excel optimiert (Semikolon als Trennzeichen, Komma als Dezimalzeichen).
+      </div>
+    </div>
+    
+    <footer>
+      Uber Earnings Report Generator v1.0 • Alle Daten werden nur lokal im Browser verarbeitet
+    </footer>
+  </div>
+</body>
+</html>
