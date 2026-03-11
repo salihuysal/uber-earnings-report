@@ -1,6 +1,6 @@
 {
   "name": "uber-earnings-report",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Uber Earnings Report Generator - Desktop App",
   "author": "Salih Uysal",
   "main": "electron/main.js",
@@ -26,12 +26,10 @@
     "mac": {
       "category": "public.app-category.business",
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
-      "icon": "icons/icon512.png",
-      "identity": null,
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "icon": "icons/icon512.png"
     },
     "dmg": {
       "contents": [
