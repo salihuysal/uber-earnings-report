@@ -486,7 +486,8 @@ function getEnabledExportColumns() {
     .filter(c => c.enabled)
     .map(c => {
       const meta = ALL_EXPORT_COLUMNS.find(a => a.key === c.key);
-      return { key: c.key, label: meta ? meta.label : c.key };
+      const defaultLabel = meta ? meta.label : c.key;
+      return { key: c.key, label: c.customLabel || defaultLabel };
     });
 }
 
@@ -495,12 +496,15 @@ let dragSrcIdx = null;
 function renderExportColumns() {
   exportColumnsList.innerHTML = exportColumns.map((col, idx) => {
     const meta = ALL_EXPORT_COLUMNS.find(a => a.key === col.key);
-    const label = meta ? meta.label : col.key;
+    const defaultLabel = meta ? meta.label : col.key;
+    const displayLabel = col.customLabel || defaultLabel;
+    const hasCustom = !!col.customLabel;
     return `
       <div class="export-col-row" draggable="true" data-idx="${idx}">
         <span class="col-order">${idx + 1}</span>
         <input type="checkbox" ${col.enabled ? 'checked' : ''} data-key="${col.key}">
-        <span class="col-label">${label}</span>
+        <span class="col-label ${hasCustom ? 'col-label-custom' : ''}" data-key="${col.key}" data-default="${defaultLabel}" title="Klicken zum Umbenennen">${displayLabel}</span>
+        ${hasCustom ? `<button class="col-label-reset" data-key="${col.key}" title="Zurücksetzen">✕</button>` : ''}
         <span class="drag-handle">⠿</span>
       </div>
     `;
@@ -512,6 +516,57 @@ function renderExportColumns() {
       const col = exportColumns.find(c => c.key === key);
       if (col) col.enabled = cb.checked;
       saveExportColumns();
+    });
+  });
+
+  exportColumnsList.querySelectorAll('.col-label').forEach(span => {
+    span.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = span.dataset.key;
+      const col = exportColumns.find(c => c.key === key);
+      if (!col) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'col-label-input';
+      input.value = col.customLabel || span.dataset.default;
+      input.placeholder = span.dataset.default;
+      span.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const commit = () => {
+        const val = input.value.trim();
+        if (val && val !== span.dataset.default) {
+          col.customLabel = val;
+        } else {
+          delete col.customLabel;
+        }
+        saveExportColumns();
+        renderExportColumns();
+      };
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') input.blur();
+        if (ev.key === 'Escape') {
+          input.value = span.dataset.default;
+          input.blur();
+        }
+      });
+    });
+  });
+
+  exportColumnsList.querySelectorAll('.col-label-reset').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = btn.dataset.key;
+      const col = exportColumns.find(c => c.key === key);
+      if (col) {
+        delete col.customLabel;
+        saveExportColumns();
+        renderExportColumns();
+      }
     });
   });
 
@@ -548,7 +603,7 @@ function renderExportColumns() {
 }
 
 btnResetColumns.addEventListener('click', () => {
-  exportColumns = DEFAULT_EXPORT_COLUMNS.map(c => ({ ...c }));
+  exportColumns = DEFAULT_EXPORT_COLUMNS.map(c => ({ key: c.key, enabled: c.enabled }));
   saveExportColumns();
   renderExportColumns();
 });
