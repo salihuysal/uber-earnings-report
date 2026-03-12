@@ -506,6 +506,23 @@ ipcMain.handle('start-extraction', async (_event, { periodIndices, customRange, 
       }
     }
 
+    // Step 3b: Aggregate rows per driver when using monthly mode
+    if (customRange) {
+      const numericFields = ['fare', 'serviceFee', 'tip', 'promotions', 'totalEarning',
+        'refundsExpenses', 'yourEarnings', 'adjustments', 'cashCollected', 'payout', 'netEarnings'];
+
+      for (const [driverName, rows] of Object.entries(collectedData)) {
+        if (rows.length <= 1) continue;
+
+        const merged = { period: rows[0].period };
+        for (const field of numericFields) {
+          merged[field] = rows.reduce((sum, r) => sum + (typeof r[field] === 'number' ? r[field] : 0), 0);
+        }
+        collectedData[driverName] = [merged];
+        logToRenderer(`${driverName}: ${rows.length} Teilzeiträume → 1 Monatszeile zusammengefasst`);
+      }
+    }
+
     // Step 4: Export PDF files
     logToRenderer('\n=== PDF-Dateien exportieren ===');
     const driversProcessed = Object.keys(collectedData).length;
