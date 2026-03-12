@@ -1,6 +1,6 @@
 {
   "name": "uber-earnings-report",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Uber Earnings Report Generator - Desktop App",
   "author": "Salih Uysal",
   "main": "electron/main.js",
@@ -23,6 +23,7 @@
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
       "!**/node_modules/.cache/**"
     ],
+    "afterSign": "build/afterSign.js",
     "mac": {
       "category": "public.app-category.business",
       "target": [

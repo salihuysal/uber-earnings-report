@@ -11,6 +11,7 @@ let automationPage = null;
 let adapter = null;
 let isExtracting = false;
 let isInstallingUpdate = false;
+let downloadedUpdateFile = null;
 
 function getSessionPath() {
   return path.join(app.getPath('userData'), 'session.json');
@@ -49,7 +50,7 @@ app.whenReady().then(() => {
   createWindow();
 
   autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.autoInstallOnAppQuit = process.platform !== 'darwin';
   autoUpdater.checkForUpdates().catch(() => {});
 });
 
@@ -595,6 +596,8 @@ autoUpdater.on('download-progress', (progress) => {
 
 autoUpdater.on('update-downloaded', (info) => {
   console.log(`[Updater] Update downloaded: v${info.version}`);
+  downloadedUpdateFile = info.downloadedFile || null;
+  console.log(`[Updater] Downloaded file: ${downloadedUpdateFile}`);
   if (mainWindow) {
     mainWindow.webContents.send('update-downloaded', info.version);
   }
@@ -607,13 +610,15 @@ autoUpdater.on('error', (err) => {
   }
 });
 
-ipcMain.handle('install-update', () => {
+ipcMain.handle('install-update', async () => {
   isInstallingUpdate = true;
-
-  // Kill browser references immediately to prevent cleanup from hanging
   automationBrowser = null;
   automationPage = null;
   adapter = null;
+
+  if (process.platform === 'darwin') {
+    return await installUpdateMac();
+  }
 
   setTimeout(() => {
     try {
@@ -623,7 +628,6 @@ ipcMain.handle('install-update', () => {
     }
   }, 300);
 
-  // Fallback: force exit if quitAndInstall didn't work after 5s
   setTimeout(() => {
     console.log('[Updater] Force exit fallback');
     app.exit(0);
@@ -631,6 +635,61 @@ ipcMain.handle('install-update', () => {
 
   return { installing: true };
 });
+
+async function installUpdateMac() {
+  const { exec } = require('child_process');
+
+  let zipPath = downloadedUpdateFile;
+
+  if (!zipPath || !fs.existsSync(zipPath)) {
+    const cacheName = app.getName() + '-updater';
+    const cacheDir = path.join(app.getPath('cache'), cacheName);
+    const fallback = path.join(cacheDir, 'update.zip');
+    if (fs.existsSync(fallback)) {
+      zipPath = fallback;
+    }
+  }
+
+  if (!zipPath || !fs.existsSync(zipPath)) {
+    console.log('[Updater] No downloaded update file found');
+    return { error: 'Update-Datei nicht gefunden. Bitte App manuell neu installieren.' };
+  }
+
+  const appBundlePath = app.getPath('exe').replace(/\/Contents\/MacOS\/.*$/, '');
+  const appDir = path.dirname(appBundlePath);
+  const appBaseName = path.basename(appBundlePath);
+  const tempDir = path.join(app.getPath('temp'), 'uber-update-' + Date.now());
+
+  console.log(`[Updater] Manual macOS update: zip=${zipPath}, app=${appBundlePath}, temp=${tempDir}`);
+
+  const script = `#!/bin/bash
+sleep 2
+mkdir -p "${tempDir}"
+unzip -o -q "${zipPath}" -d "${tempDir}"
+APP_NAME=$(ls -d "${tempDir}"/*.app 2>/dev/null | head -1)
+if [ -z "$APP_NAME" ]; then
+  rm -rf "${tempDir}"
+  exit 1
+fi
+rm -rf "${appBundlePath}"
+cp -R "$APP_NAME" "${appDir}/"
+xattr -cr "${appDir}/${appBaseName}"
+open "${appDir}/${appBaseName}"
+rm -rf "${tempDir}"
+`;
+
+  const scriptPath = path.join(app.getPath('temp'), 'uber-update.sh');
+  fs.writeFileSync(scriptPath, script, { mode: 0o755 });
+
+  const child = exec(`bash "${scriptPath}"`, { detached: true, stdio: 'ignore' });
+  child.unref();
+
+  setTimeout(() => {
+    app.exit(0);
+  }, 500);
+
+  return { installing: true };
+}
 
 ipcMain.handle('check-for-updates', async () => {
   try {
