@@ -674,6 +674,7 @@ fi
 rm -rf "${appBundlePath}"
 cp -R "$APP_NAME" "${appDir}/"
 xattr -cr "${appDir}/${appBaseName}"
+codesign --force --deep --sign - "${appDir}/${appBaseName}" 2>/dev/null || true
 open "${appDir}/${appBaseName}"
 rm -rf "${tempDir}"
 `;

@@ -9,7 +9,7 @@ exports.default = async function afterSign(context) {
     `${context.packager.appInfo.productFilename}.app`
   );
 
-  console.log('[afterSign] Stripping all code signatures from:', appPath);
+  console.log('[afterSign] Replacing broken signatures with clean ad-hoc signature:', appPath);
 
   try {
     execSync(
@@ -18,26 +18,11 @@ exports.default = async function afterSign(context) {
     );
 
     execSync(
-      `find "${appPath}" -name "*.dylib" -exec codesign --remove-signature {} \\; 2>/dev/null || true`,
+      `codesign --force --deep --sign - "${appPath}"`,
       { stdio: 'inherit' }
     );
 
-    execSync(
-      `find "${appPath}" -name "*.framework" -type d -exec codesign --remove-signature {} \\; 2>/dev/null || true`,
-      { stdio: 'inherit' }
-    );
-
-    execSync(
-      `find "${appPath}" -name "*.app" -type d -exec codesign --remove-signature {} \\; 2>/dev/null || true`,
-      { stdio: 'inherit' }
-    );
-
-    execSync(
-      `codesign --remove-signature "${appPath}" 2>/dev/null || true`,
-      { stdio: 'inherit' }
-    );
-
-    console.log('[afterSign] All code signatures removed successfully');
+    console.log('[afterSign] Clean ad-hoc signature applied successfully');
   } catch (e) {
     console.log('[afterSign] Warning:', e.message);
   }
